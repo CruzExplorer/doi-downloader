@@ -1,0 +1,22 @@
+# Downloaded papers and run outputs: never part of the repository
+PDFs/
+Report*.csv
+Manifest.csv
+References.ris
+References.bib
+download_log.json
+
+# Personal settings and keys live in %APPDATA%\DOI Downloader; never here
+settings.json
+settings*.json
+settings*.txt
+*.env
+
+# Machine-specific
+*.lnk
+_v1_backup/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
