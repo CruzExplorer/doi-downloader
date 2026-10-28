@@ -120,6 +120,20 @@ def test_registry_unreachable_is_not_wrong_paper():
     assert st == 'unreachable' and f is None and 'timed out' in note
 
 
+def test_page_field_shapes():
+    assert S._pages('1230-1236') == (1230, 1236)
+    assert S._pages(' 12 – 19 ') == (12, 19)
+    assert S._pages('1—9') == (1, 9)                      # em dash
+    assert S._pages('27:1-27:20') == (1, 20)               # ACM journal: page within the article
+    assert S._pages('S10-S15') == (10, 15) and S._pages('A1-A7') == (1, 7)
+    assert S._pages('1245-1245') == (1245, 1245)           # MDPI article number -> not checkable downstream
+    assert S._pages('123') == (123, 123)
+    for bad in ('e12345', '12-', '', None):
+        assert S._pages(bad) == (None, None), bad
+    f = S.crossref_facts('10.1145/x', {'message': {'title': ['T'], 'page': '27:1-27:20', 'author': []}})
+    assert f.page_range == 20
+
+
 def test_retraction_flag_from_crossref():
     cr = crossref_record(DOI, 'Retracted thing here', retracted=True)
     f = S.crossref_facts(DOI, cr)

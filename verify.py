@@ -35,9 +35,38 @@ FAIL_CODES = {
 
 # ------------------------------------------------------------------ normalisers
 
-_ACCENTS = {ord(c): None for c in '´`¨ˆ˜¯˘˙˚˝¸'}
-_DASHES = str.maketrans({c: '-' for c in '‐‑‒–—―−'})
-_ZERO_WIDTH = str.maketrans({c: None for c in '­​‌‍﻿'})
+# Spacing accents that LaTeX-made PDFs leave next to a letter ("Garc´ıa"): dropped.
+_ACCENTS = {ord(c): None for c in (
+    '´'   # acute accent
+    '`'   # grave accent
+    '¨'   # diaeresis
+    'ˆ'   # modifier circumflex
+    '˜'   # small tilde
+    '¯'   # macron
+    '˘'   # breve
+    '˙'   # dot above
+    '˚'   # ring above
+    '˝'   # double acute
+    '¸'   # cedilla
+)}
+# Every dash form a DOI may be printed with: all become '-'.
+_DASHES = str.maketrans({c: '-' for c in (
+    '‐'   # hyphen
+    '‑'   # non-breaking hyphen
+    '‒'   # figure dash
+    '–'   # en dash
+    '—'   # em dash
+    '―'   # horizontal bar
+    '−'   # minus sign
+)})
+# Invisible characters that split a DOI or a word without showing: removed.
+_ZERO_WIDTH = str.maketrans({c: None for c in (
+    '­'   # soft hyphen
+    '​'   # zero width space
+    '‌'   # zero width non-joiner
+    '‍'   # zero width joiner
+    '﻿'   # zero width no-break space (BOM)
+)})
 
 
 def clean_registry_text(s: str) -> str:

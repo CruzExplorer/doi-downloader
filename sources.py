@@ -177,11 +177,18 @@ class Client:
 
 # ------------------------------------------------------------------ registries
 
+_PAGE_SIDE = r'(?:[A-Za-z]{0,2}\d+:)?[A-Za-z]{0,2}(\d+)'      # 1236 · S15 · 27:20 (ACM: article 27, page 20)
+_PAGE_RANGE = re.compile(r'\s*' + _PAGE_SIDE + r'\s*[-‐‑‒–—]\s*' + _PAGE_SIDE + r'\s*$')
+_PAGE_ONE = re.compile(r'\s*(\d+)\s*$')
+
+
 def _pages(s: str) -> tuple[int | None, int | None]:
-    m = re.match(r'\s*(\d+)\s*[-–]\s*(\d+)\s*$', s or '')
+    """Crossref 'page' -> (first, last). A single number (MDPI article numbers) gives
+    first == last, which Facts.page_range treats as 'not checkable'. Anything else -> None."""
+    m = _PAGE_RANGE.match(s or '')
     if m:
         return int(m.group(1)), int(m.group(2))
-    m = re.match(r'\s*(\d+)\s*$', s or '')
+    m = _PAGE_ONE.match(s or '')
     return (int(m.group(1)), int(m.group(1))) if m else (None, None)
 
 
